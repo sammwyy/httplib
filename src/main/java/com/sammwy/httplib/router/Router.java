@@ -60,10 +60,43 @@ public class Router implements HttpHandler {
         return null;
     }
 
-    public void handle(Request request, Response response) {
+    public void handle(Request request, Response response) throws Exception {
         Route route = this.matchRoute(request.getMethod(), request.getPath());
+
         if (route != null) {
             route.handle(request, response);
+        } else {
+            response.setStatus(404);
+            response.send("404 Not Found");
+            response.flush();
         }
+    }
+
+    public Router all(String path, HttpHandler handler) {
+        return this.addRoute(Route.ALL(path, handler));
+    }
+
+    public Router delete(String path, HttpHandler handler) {
+        return this.addRoute(Route.DELETE(path, handler));
+    }
+
+    public Router get(String path, HttpHandler handler) {
+        return this.addRoute(Route.GET(path, handler));
+    }
+
+    public Router head(String path, HttpHandler handler) {
+        return this.addRoute(Route.HEAD(path, handler));
+    }
+
+    public Router patch(String path, HttpHandler handler) {
+        return this.addRoute(Route.PATCH(path, handler));
+    }
+
+    public Router post(String path, HttpHandler handler) {
+        return this.addRoute(Route.POST(path, handler));
+    }
+
+    public Router put(String path, HttpHandler handler) {
+        return this.addRoute(Route.PUT(path, handler));
     }
 }

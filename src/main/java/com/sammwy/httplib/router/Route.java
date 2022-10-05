@@ -68,7 +68,7 @@ public class Route implements HttpHandler {
     }
 
     @Override
-    public void handle(Request request, Response response) {
+    public void handle(Request request, Response response) throws Exception {
         request.setRoutering(this);
         this.handler.handle(request, response);
     }

@@ -31,7 +31,15 @@ public class HttpDecoderWorker implements Runnable {
             request.setIP(address.getHostString());
 
             Response response = new Response(this.socket);
-            this.handler.handle(request, response);
+            try {
+                this.handler.handle(request, response);
+            } catch (Exception e) {
+                response.setStatus(500);
+                response.send("500 Internal Server Error");
+                response.flush();
+
+                e.printStackTrace();
+            }
         } catch (IOException e) {
             if (this.socket.isOpen()) {
                 try {
