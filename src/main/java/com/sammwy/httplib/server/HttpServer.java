@@ -9,13 +9,25 @@ import com.sammwy.httplib.router.Router;
 
 public class HttpServer extends Router {
     private ServerSocketChannel server;
+
     private int backlog = 128;
+    private int maxAlloc = 1024;
+
+    public HttpServer setBacklog(int backlog) {
+        this.backlog = backlog;
+        return this;
+    }
+
+    public HttpServer setMaxAlloc(int maxAlloc) {
+        this.maxAlloc = maxAlloc;
+        return this;
+    }
 
     private void waitForConnections() throws IOException {
         while (this.server.isOpen()) {
             SocketChannel clientSocket = this.server.accept();
             if (clientSocket.isOpen()) {
-                HttpDecoderWorker worker = new HttpDecoderWorker(this, clientSocket);
+                HttpDecoderWorker worker = new HttpDecoderWorker(this, maxAlloc, clientSocket);
                 worker.runAsync();
             }
         }

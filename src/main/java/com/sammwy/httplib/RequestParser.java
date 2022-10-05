@@ -6,6 +6,7 @@ public class RequestParser {
 
         boolean readingHeaders = false;
         boolean readingBody = false;
+        boolean valid = false;
 
         for (String line : raw.split("\n")) {
             if (readingBody) {
@@ -16,14 +17,18 @@ public class RequestParser {
                     readingHeaders = false;
                 } else {
                     request.addHeader(line);
+                    valid = true;
                 }
             } else {
-                request.setHttpMeta(line);
-                readingHeaders = true;
+                if (request.setHttpMeta(line)) {
+                    readingHeaders = true;
+                } else {
+                    return null;
+                }
             }
         }
 
-        return request;
+        return valid ? request : null;
     }
 
     public static Request fromByteArray(byte[] bytes) {
